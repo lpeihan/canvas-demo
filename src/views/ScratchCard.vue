@@ -65,6 +65,18 @@ export default {
 
       canvas.ontouchend = canvas.onmouseup = function() {
         flag = false;
+
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data; // 获取每一个像素
+        let area = 0;
+        for (var i = 3, len = data.length; i < len; i += 4) {
+          if (data[i] === 0) {
+            area++;
+          }
+        }
+
+        if (area >= canvas.width * canvas.height * 0.8) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
       };
     }
   },
