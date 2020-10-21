@@ -1,8 +1,11 @@
 <template>
   <div class="container" @touchmove.stop.prevent>
-    <van-nav-bar title="涂鸦" fixed left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar title="刮刮卡" fixed left-arrow @click-left="$router.go(-1)" />
 
-    <canvas class="canvas" ref="canvas" width="300" height="500" />
+    <div class="canvas-wrapper">
+      <img src="../assets/scratch-card.jpg" />
+      <canvas class="canvas" ref="canvas" width="200" height="300" />
+    </div>
   </div>
 </template>
 
@@ -10,27 +13,21 @@
 export default {
   methods: {
     // 消除锯齿
-    removeCanvasSawhooth(canvas, ctx) {
-      let width = canvas.width;
-      let height = canvas.height;
-      if (window.devicePixelRatio) {
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-        canvas.height = height * window.devicePixelRatio;
-        canvas.width = width * window.devicePixelRatio;
-      }
-
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    },
     draw() {
       /** @type {HTMLCanvasElement} */
       const canvas = this.$refs.canvas;
       const ctx = canvas.getContext("2d");
-      this.removeCanvasSawhooth(canvas, ctx);
 
       let flag = false;
       let x = 0;
       let y = 0;
+
+      ctx.beginPath();
+      ctx.fillStyle = "gray";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.lineWidth = 30;
 
       canvas.ontouchstart = canvas.onmousedown = function(e) {
         flag = true;
@@ -45,10 +42,8 @@ export default {
           y = e.clientY - rect.y;
         }
 
-        ctx.strokeStyle = "#ff7752";
         ctx.lineCap = "round";
-        ctx.lineWidth = 10;
-        ctx.beginPath();
+        ctx.lineJoin = "round";
         ctx.moveTo(x, y);
       };
 
@@ -62,6 +57,7 @@ export default {
             x = e.clientX - rect.x;
             y = e.clientY - rect.y;
           }
+
           ctx.lineTo(x, y);
           ctx.stroke();
         }
@@ -84,7 +80,22 @@ export default {
 .container {
   text-align: center;
   padding: 50px 0;
-  .canvas {
+
+  .canvas-wrapper {
+    position: relative;
+    width: 200px;
+    height: 300px;
+    margin: auto;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    .canvas {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
     border-radius: 4px;
     box-shadow: 0 0 5px 2px rgba(@primary-color, 0.1);
   }
