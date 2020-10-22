@@ -19,6 +19,11 @@ const routes = [
     path: "/scratch-card",
     name: "ScratchCard",
     component: require("../views/ScratchCard.vue").default
+  },
+  {
+    path: "/snake",
+    name: "Snake",
+    component: require("../views/Snake.vue").default
   }
 ];
 
